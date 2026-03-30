@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aurum Studio — AI Product Photography by Vaishnav</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0c0c0c;--bg2:#111;--bg3:#181818;
+  --slate:#202020;--slate2:#282828;
+  --gold:#c9a84c;--gold2:#e8c96a;
+  --gdim:rgba(201,168,76,.12);--gglow:rgba(201,168,76,.07);
+  --text:#e8e4de;--muted:#7a7672;--faint:#2a2a2a;
+  --gb:rgba(255,255,255,.04);
+  --gbr:rgba(255,255,255,.07);
+  --gbg:rgba(201,168,76,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none}
+#cur{position:fixed;width:9px;height:9px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference}
+#cur-r{position:fixed;width:34px;height:34px;border-radius:50%;border:1px solid rgba(201,168,76,.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.5}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.4rem 4rem;display:flex;justify-content:space-between;align-items:center;transition:background .3s,border-bottom .3s}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;letter-spacing:.2em;color:var(--gold2);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.73rem;letter-spacing:.14em;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-btn{background:transparent;border:1px solid var(--gbg);color:var(--gold);padding:.48rem 1.3rem;font-family:'DM Sans',sans-serif;font-size:.71rem;letter-spacing:.12em;text-transform:uppercase;cursor:none;transition:background .3s,box-shadow .3s}
+.nav-btn:hover{background:var(--gdim);box-shadow:0 0 18px var(--gglow)}
+
+/* HERO */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem 4rem 6rem;overflow:hidden}
+.h-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.03) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 10%,transparent 100%);pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(110px);pointer-events:none}
+.orb1{width:560px;height:560px;background:radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%);top:-200px;right:-60px}
+.orb2{width:360px;height:360px;background:radial-gradient(circle,rgba(201,168,76,.04) 0%,transparent 70%);bottom:0;left:6%}
+.pill{display:inline-flex;align-items:center;gap:.6rem;border:1px solid var(--gbg);padding:.38rem 1rem .38rem .65rem;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:var(--gglow);margin-bottom:1.4rem}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.35;transform:scale(.75)}50%{opacity:1;transform:scale(1.2)}}
+.hero-ttl{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7.5vw,6.8rem);font-weight:300;line-height:1.02;max-width:800px;margin-bottom:1.6rem}
+.hero-ttl em{font-style:italic;color:var(--gold2)}
+.hero-sub{font-size:.93rem;color:var(--muted);max-width:460px;line-height:1.78;margin-bottom:2.6rem}
+.hero-sub strong{color:var(--text);font-weight:400}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1.8rem}
+.trust-row{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.trust-item{font-size:.71rem;color:var(--muted);display:flex;align-items:center;gap:.4rem}
+.t-sep{color:var(--faint)}
+.scroll-cue{position:absolute;left:4rem;bottom:2.5rem;display:flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--faint);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase}
+.scroll-bar{width:1px;height:44px;background:linear-gradient(to bottom,var(--gold),transparent);animation:sp 1.7s ease-in-out infinite}
+@keyframes sp{0%,100%{opacity:.25;transform:scaleY(1)}50%{opacity:1;transform:scaleY(.6)}}
+
+/* SECTIONS */
+section{padding:6.5rem 4rem;position:relative}
+.tag{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;display:flex;align-items:center;gap:.7rem}
+.tag::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.5}
+.sec-ttl{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.8vw,3.1rem);font-weight:300;line-height:1.1;margin-bottom:1rem}
+.sec-ttl em{font-style:italic;color:var(--gold2)}
+.sec-desc{color:var(--muted);max-width:500px;line-height:1.8;font-size:.9rem}
+.divider{height:1px;background:linear-gradient(to right,transparent,var(--gbg),transparent);margin:0 4rem}
+
+/* REVEAL — CSS-only, IntersectionObserver driven */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .72s ease,transform .72s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+
+/* BUTTONS */
+.btn-gold{background:linear-gradient(135deg,var(--gold),#9c6e20);color:#0c0c0c;padding:.82rem 2.1rem;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:none;transition:box-shadow .3s,transform .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.5rem}
+.btn-gold:hover{box-shadow:0 8px 36px rgba(201,168,76,.3);transform:translateY(-1px)}
+.btn-wa{background:#25D366;color:#fff;padding:.82rem 2rem;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;transition:box-shadow .3s,transform .2s;display:inline-flex;align-items:center;gap:.55rem;text-decoration:none}
+.btn-wa:hover{box-shadow:0 8px 32px rgba(37,211,102,.28);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--muted);font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;display:inline-flex;align-items:center;gap:.5rem;transition:color .3s;text-decoration:none}
+.btn-ghost:hover{color:var(--text)}
+
+/* PROCESS */
+#process{background:var(--bg2)}
+.proc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:3.5rem;background:var(--gbr);border:1px solid var(--gbr)}
+.proc-step{background:var(--bg2);padding:2.8rem 2.2rem;position:relative;overflow:hidden;transition:background .4s}
+.proc-step::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0;transition:opacity .4s}
+.proc-step:hover{background:var(--slate)}.proc-step:hover::before{opacity:1}
+.step-n{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:var(--faint);line-height:1;margin-bottom:1.2rem}
+.step-ico{width:44px;height:44px;border:1px solid var(--gbg);display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;font-size:1.2rem;transition:border-color .3s,box-shadow .3s}
+.proc-step:hover .step-ico{border-color:var(--gold);box-shadow:0 0 16px var(--gglow)}
+.step-ttl{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;margin-bottom:.65rem}
+.step-desc{color:var(--muted);font-size:.82rem;line-height:1.7}
+.step-arr{position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);color:var(--faint);font-size:1.3rem;transition:color .3s,transform .3s}
+.proc-step:last-child .step-arr{display:none}
+.proc-step:hover .step-arr{color:var(--gold);transform:translateY(-50%) translateX(4px)}
+
+/* WHY AI */
+#why{background:var(--bg3)}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3rem}
+.why-table{width:100%;border-collapse:collapse}
+.why-table thead tr{border-bottom:1px solid var(--gbg)}
+.why-table th{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:.8rem 1rem;text-align:left;font-weight:400}
+.why-table th:first-child{padding-left:0}
+.why-table td{padding:.85rem 1rem;font-size:.84rem;color:var(--muted);border-bottom:1px solid var(--gbr);vertical-align:middle}
+.why-table td:first-child{padding-left:0;color:var(--text);font-weight:400}
+.bad{color:#e05c5c}.good{color:var(--gold)}
+.why-pts{list-style:none;display:flex;flex-direction:column;gap:1.2rem}
+.why-pts li{display:flex;align-items:flex-start;gap:1rem;font-size:.87rem;color:var(--muted);line-height:1.65}
+.why-pts li::before{content:'◆';color:var(--gold);font-size:.42rem;margin-top:.45rem;flex-shrink:0}
+.why-pts li strong{color:var(--text);font-weight:400}
+
+/* DELIVERABLES */
+#deliverables{background:var(--bg2)}
+.deliv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:3.5rem;background:var(--gbr);border:1px solid var(--gbr)}
+.deliv-card{background:var(--bg2);padding:2.2rem 2rem;position:relative;overflow:hidden;transition:background .35s}
+.deliv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0;transition:opacity .35s}
+.deliv-card:hover{background:var(--slate)}.deliv-card:hover::before{opacity:1}
+.deliv-ico{font-size:1.6rem;margin-bottom:.9rem;display:block}
+.deliv-n{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--faint);line-height:1;margin-bottom:.9rem}
+.deliv-ttl{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:400;margin-bottom:.55rem;color:var(--text)}
+.deliv-desc{font-size:.8rem;color:var(--muted);line-height:1.65;margin-bottom:1rem}
+.deliv-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.dtag{font-size:.57rem;letter-spacing:.13em;text-transform:uppercase;border:1px solid var(--gbr);padding:.18rem .5rem;color:var(--muted);transition:border-color .3s,color .3s}
+.deliv-card:hover .dtag{border-color:var(--gbg);color:var(--gold)}
+
+/* PORTFOLIO */
+#portfolio{background:var(--bg)}
+.port-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:1.2rem}
+.port-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.port-item{position:relative;overflow:hidden;background:var(--slate);cursor:none}
+.port-item::after{content:'';position:absolute;inset:0;border:1px solid transparent;transition:border-color .4s;z-index:2;pointer-events:none}
+.port-item:hover::after{border-color:var(--gold)}
+.port-img{position:relative;overflow:hidden;aspect-ratio:3/4}
+.port-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.25,.46,.45,.94),filter .5s;filter:saturate(.85) brightness(.93)}
+.port-item:hover .port-img img{transform:scale(1.07);filter:saturate(1) brightness(1)}
+.port-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(12,12,12,.92) 0%,rgba(12,12,12,.25) 45%,transparent 70%);z-index:1}
+.port-lbl{position:absolute;top:.9rem;left:.9rem;z-index:3;font-size:.57rem;letter-spacing:.2em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--gbg);color:var(--gold);background:rgba(12,12,12,.7);backdrop-filter:blur(6px)}
+.port-info{position:absolute;bottom:0;left:0;right:0;padding:1.3rem;z-index:3;transform:translateY(6px);transition:transform .4s}
+.port-item:hover .port-info{transform:translateY(0)}
+.port-cat{font-size:.59rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.32rem}
+.port-name{font-family:'Cormorant Garamond',serif;font-size:1.12rem;font-weight:400;line-height:1.2}
+.port-spec{display:block;margin-top:.45rem;font-size:.59rem;letter-spacing:.09em;color:var(--muted);border-top:1px solid var(--gbr);padding-top:.42rem;opacity:0;transition:opacity .35s .1s}
+.port-item:hover .port-spec{opacity:1}
+.port-ba{grid-column:span 2}
+.port-ba .port-img{aspect-ratio:16/9}
+.ba-wrap{position:absolute;inset:0;display:flex;z-index:1;overflow:hidden}
+.ba-b,.ba-a{flex:1;overflow:hidden;position:relative}
+.ba-b img,.ba-a img{width:200%;height:100%;object-fit:cover;position:absolute;top:0}
+.ba-b img{left:0;filter:grayscale(.65) brightness(.65)!important}
+.ba-a img{right:0;left:auto;filter:none!important}
+.ba-tag{position:absolute;bottom:.8rem;font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;padding:.22rem .55rem;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:4}
+.ba-b .ba-tag{left:.8rem;color:var(--muted);border:1px solid var(--gbr)}
+.ba-a .ba-tag{right:.8rem;color:var(--gold);border:1px solid var(--gbg)}
+.ba-line{position:absolute;top:0;bottom:0;left:50%;width:1px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);z-index:5;pointer-events:none}
+
+/* PRICING */
+#pricing{background:var(--bg2)}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3.5rem}
+.price-card{background:var(--gb);border:1px solid var(--gbr);padding:2.3rem 1.8rem;position:relative;overflow:hidden;transition:border-color .4s,transform .3s,box-shadow .4s}
+.price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0;transition:opacity .4s}
+.price-card:hover{border-color:var(--gbg);transform:translateY(-4px);box-shadow:0 20px 55px rgba(0,0,0,.4)}
+.price-card:hover::before{opacity:1}
+.price-card.feat{border-color:var(--gbg);background:linear-gradient(135deg,rgba(201,168,76,.055) 0%,transparent 55%)}
+.price-card.feat::before{opacity:1}
+.feat-bdg{position:absolute;top:1.1rem;right:1.1rem;font-size:.51rem;letter-spacing:.2em;text-transform:uppercase;color:#0c0c0c;background:var(--gold);padding:.18rem .52rem}
+.plan-tier{font-size:.61rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem}
+.plan-price{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--text);line-height:1;margin-bottom:.22rem}
+.plan-price sup{font-size:1.1rem;vertical-align:super;color:var(--gold)}
+.plan-per{font-size:.72rem;color:var(--muted);margin-bottom:1.2rem}
+.plan-desc{font-size:.79rem;color:var(--muted);line-height:1.65;margin-bottom:1.4rem;padding-bottom:1.3rem;border-bottom:1px solid var(--gbr)}
+.plan-feats{list-style:none;margin-bottom:1.7rem}
+.plan-feats li{font-size:.79rem;color:var(--muted);padding:.46rem 0;border-bottom:1px solid var(--gbr);display:flex;align-items:center;gap:.7rem}
+.plan-feats li:last-child{border-bottom:none}
+.plan-feats li::before{content:'◆';font-size:.37rem;color:var(--gold);flex-shrink:0}
+.plan-feats li.off{color:var(--faint)}.plan-feats li.off::before{color:var(--faint)}
+.pbtn{width:100%;padding:.8rem;font-family:'DM Sans',sans-serif;font-size:.71rem;letter-spacing:.14em;text-transform:uppercase;cursor:none;transition:all .3s}
+.pbtn-ol{background:transparent;border:1px solid var(--gbg);color:var(--gold)}
+.pbtn-ol:hover{background:var(--gdim);box-shadow:0 4px 16px var(--gglow)}
+.pbtn-fl{background:linear-gradient(135deg,var(--gold),#9c6e20);border:none;color:#0c0c0c;font-weight:500}
+.pbtn-fl:hover{box-shadow:0 8px 26px rgba(201,168,76,.3);transform:translateY(-1px)}
+
+/* TESTIMONIALS */
+#testimonials{background:var(--bg);overflow:hidden}
+.t-track{display:flex;gap:1.3rem;margin-top:2.8rem;width:max-content;animation:marquee 34s linear infinite}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t-track:hover{animation-play-state:paused}
+.t-card{width:360px;background:var(--gb);border:1px solid var(--gbr);padding:1.8rem;flex-shrink:0;position:relative}
+.t-card::after{content:'"';position:absolute;top:.8rem;right:1.3rem;font-family:'Cormorant Garamond',serif;font-size:4.5rem;color:var(--faint);line-height:1}
+.t-stars{color:var(--gold);font-size:.67rem;margin-bottom:.85rem;letter-spacing:.1em}
+.t-txt{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem}
+.t-auth{display:flex;align-items:center;gap:.72rem}
+.t-av{width:34px;height:34px;border-radius:50%;background:var(--slate2);border:1px solid var(--gbg);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--gold);font-family:'Cormorant Garamond',serif;flex-shrink:0}
+.t-name{font-size:.79rem;color:var(--text);font-weight:400}
+.t-brand{font-size:.67rem;color:var(--muted)}
+
+/* CONTACT */
+#contact{background:var(--bg2)}
+.ct-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:4.5rem;align-items:start}
+.ct-det{display:flex;align-items:center;gap:.9rem;padding:.85rem 0;border-bottom:1px solid var(--gbr);color:var(--muted);font-size:.82rem}
+.ct-ico{color:var(--gold);font-size:.92rem;width:18px;text-align:center}
+.ct-form{display:flex;flex-direction:column;gap:.85rem}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.fg{display:flex;flex-direction:column;gap:.32rem}
+.flbl{font-size:.61rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.fi,.fta,.fsel{background:var(--gb);border:1px solid var(--gbr);color:var(--text);padding:.73rem .88rem;font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;transition:border-color .3s,box-shadow .3s;cursor:text;width:100%}
+.fi:focus,.fta:focus,.fsel:focus{border-color:var(--gbg);box-shadow:0 0 0 2px var(--gglow)}
+.fi::placeholder,.fta::placeholder{color:#3a3a3a}
+.fta{resize:none;height:110px}
+.fsel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c9a84c'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center;background-size:1.1rem;cursor:none}
+.fsel option{background:var(--slate)}
+.wa-big{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:.88rem;background:#25D366;color:#fff;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;transition:box-shadow .3s,transform .2s;text-decoration:none;margin-top:.3rem}
+.wa-big:hover{box-shadow:0 8px 28px rgba(37,211,102,.28);transform:translateY(-1px)}
+
+/* FOUNDER */
+#founder{background:var(--bg3);padding:5rem 4rem}
+.founder-wrap{display:flex;align-items:center;gap:3rem;max-width:720px;margin:0 auto;border:1px solid var(--gbg);padding:2.5rem;background:linear-gradient(135deg,rgba(201,168,76,.04) 0%,transparent 55%)}
+.f-avatar{width:88px;height:88px;border-radius:50%;border:2px solid var(--gbg);background:var(--slate2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.f-init{font-family:'Cormorant Garamond',serif;font-size:2.4rem;color:var(--gold2);font-weight:300}
+.f-name{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;margin-bottom:.28rem}
+.f-role{font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem}
+.f-bio{font-size:.84rem;color:var(--muted);line-height:1.78}
+.f-bio strong{color:var(--text);font-weight:400}
+
+/* FOOTER */
+footer{background:var(--bg);padding:2rem 4rem;border-top:1px solid var(--gbr);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.2rem}
+.foot-logo{font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:.2em;color:var(--gold)}
+.foot-copy{font-size:.69rem;color:var(--faint)}
+.foot-links{display:flex;gap:1.3rem}
+.foot-links a{color:var(--muted);font-size:.69rem;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .3s}
+.foot-links a:hover{color:var(--gold)}
+.socials{display:flex;gap:.75rem}
+.soc{width:34px;height:34px;border:1px solid var(--gbr);display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;font-size:.73rem;transition:border-color .3s,color .3s,box-shadow .3s}
+.soc:hover{border-color:var(--gold);color:var(--gold);box-shadow:0 0 12px var(--gglow)}
+
+/* FLOATING WA */
+#wa-float{position:fixed;bottom:2rem;right:2rem;z-index:800;display:flex;align-items:center;gap:.65rem;background:#25D366;color:#fff;padding:.72rem 1.25rem .72rem .95rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;letter-spacing:.07em;text-decoration:none;box-shadow:0 8px 30px rgba(37,211,102,.35);transition:transform .25s,box-shadow .25s,opacity .5s;opacity:0;pointer-events:none}
+#wa-float.show{opacity:1;pointer-events:auto}
+#wa-float:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 40px rgba(37,211,102,.45)}
+.wa-dot{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:#fff}
+.wa-dot::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:rgba(37,211,102,.4);animation:wap 1.9s ease-in-out infinite}
+@keyframes wap{0%,100%{transform:scale(.75);opacity:.55}50%{transform:scale(1.45);opacity:0}}
+
+/* MOBILE */
+@media(max-width:900px){
+  nav{padding:1.1rem 1.5rem}.nav-links{display:none}
+  section,#founder{padding:4.5rem 1.5rem}
+  #hero{padding:7rem 1.5rem 5rem}
+  .proc-grid,.price-grid,.ct-grid,.why-grid,.deliv-grid{grid-template-columns:1fr}
+  .port-grid{grid-template-columns:1fr 1fr}
+  .port-ba{grid-column:span 2}
+  footer{flex-direction:column;align-items:flex-start;padding:1.8rem 1.5rem}
+  .frow{grid-template-columns:1fr}
+  .founder-wrap{flex-direction:column;text-align:center}
+  .divider{margin:0 1.5rem}
+  .t-sep{display:none}
+  #wa-float span.wa-lbl{display:none}
+  #wa-float{padding:.82rem}
+}
+@media(max-width:540px){
+  .port-grid{grid-template-columns:1fr}
+  .port-ba{grid-column:span 1}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="logo">AURUM STUDIO</a>
+  <ul class="nav-links">
+    <li><a href="#process">Process</a></li>
+    <li><a href="#why">Why AI</a></li>
+    <li><a href="#deliverables">Deliverables</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get a Quote</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="h-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="pill"><span class="dot"></span>Now Accepting Pilot Brand Partners</div>
+  <h1 class="hero-ttl">Luxury Product Visuals.<br/><em>No Photoshoot</em><br/>Required.</h1>
+  <p class="hero-sub">Send us your phone photo. We return studio-grade campaign assets in 48 hours. Brands save <strong>up to 80%</strong> — and get visuals that actually convert.</p>
+  <div class="hero-btns">
+    <a href="https://wa.me/919999999999?text=Hi%20Vaishnav!%20I%20saw%20your%20portfolio%20and%20want%20to%20discuss%20a%20project." class="btn-wa" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Chat on WhatsApp
+    </a>
+    <a href="#portfolio" class="btn-ghost">↓ View Work</a>
+  </div>
+  <div class="trust-row">
+    <span class="trust-item">⚡ Delivery within 48 hours</span>
+    <span class="t-sep">·</span>
+    <span class="trust-item">🔒 Product accuracy guaranteed</span>
+    <span class="t-sep">·</span>
+    <span class="trust-item">✦ No studio. No photographer.</span>
+  </div>
+  <div class="scroll-cue"><div class="scroll-bar"></div><span>Scroll</span></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="tag rv">How It Works</div>
+  <h2 class="sec-ttl rv">Three steps to <em>studio-grade</em> assets</h2>
+  <p class="sec-desc rv">From your phone shot to a campaign-ready visual — faster and cheaper than any traditional studio.</p>
+  <div class="proc-grid">
+    <div class="proc-step rv">
+      <div class="step-n">01</div>
+      <div class="step-ico">📦</div>
+      <h3 class="step-ttl">Upload Your Product</h3>
+      <p class="step-desc">Send raw product photos — even smartphone shots work. No equipment, no prep, no studio booking needed.</p>
+      <div class="step-arr">→</div>
+    </div>
+    <div class="proc-step rv">
+      <div class="step-n">02</div>
+      <div class="step-ico">⚡</div>
+      <h3 class="step-ttl">AI Processing</h3>
+      <p class="step-desc">Our AI engine enhances textures, corrects reflections, builds environments, and crafts lighting that rivals a ₹1L studio setup.</p>
+      <div class="step-arr">→</div>
+    </div>
+    <div class="proc-step rv">
+      <div class="step-n">03</div>
+      <div class="step-ico">✦</div>
+      <h3 class="step-ttl">Studio-Grade Assets</h3>
+      <p class="step-desc">Receive campaign-ready, high-resolution visuals for web, print, and social — in as little as 48 hours.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHY AI -->
+<section id="why">
+  <div class="tag rv">The Case for AI</div>
+  <h2 class="sec-ttl rv">Why smart brands are <em>switching</em></h2>
+  <p class="sec-desc rv">Traditional studio photography was the only option. Now it's just the expensive one.</p>
+  <div class="why-grid">
+    <div class="rv">
+      <table class="why-table">
+        <thead><tr><th>What you need</th><th>Traditional Studio</th><th>Aurum AI Studio</th></tr></thead>
+        <tbody>
+          <tr><td>5-product shoot</td><td class="bad">&#8377;40,000&#8211;80,000</td><td class="good">&#8377;4,999</td></tr>
+          <tr><td>Turnaround</td><td class="bad">1&#8211;2 weeks</td><td class="good">48 hours</td></tr>
+          <tr><td>Revisions</td><td class="bad">Costly reshoots</td><td class="good">Unlimited variations</td></tr>
+          <tr><td>Backgrounds</td><td class="bad">1&#8211;2 setups</td><td class="good">Unlimited environments</td></tr>
+          <tr><td>Reshoot cost</td><td class="bad">Full price again</td><td class="good">Zero</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rv">
+      <ul class="why-pts">
+        <li><strong>Texture Preservation:</strong> Gemstone facets, cream textures, fabric weave &#8212; rendered with accuracy that turns browsers into buyers.</li>
+        <li><strong>Reflective Accuracy:</strong> Jewelry and glass packaging get proper light physics &#8212; no blown-out hotspots, no lost brilliance.</li>
+        <li><strong>Unlimited Variations:</strong> White bg, lifestyle context, seasonal themes &#8212; one product, infinite outputs.</li>
+        <li><strong>Scale on demand:</strong> Launching 50 SKUs? Same cost per unit as 5. Traditional studios can&#8217;t compete.</li>
+        <li><strong>Zero reshoot risk:</strong> Change background or lighting? Re-render in hours, not days.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DELIVERABLES -->
+<section id="deliverables">
+  <div class="tag rv">What You Receive</div>
+  <h2 class="sec-ttl rv">Every asset your brand <em>needs</em></h2>
+  <p class="sec-desc rv">We don&#8217;t just make photos. We deliver a complete visual kit &#8212; ready for every channel, campaign, and platform.</p>
+  <div class="deliv-grid">
+    <div class="deliv-card rv">
+      <span class="deliv-ico">&#128722;</span>
+      <div class="deliv-n">01</div>
+      <h3 class="deliv-ttl">Amazon &amp; E-commerce Images</h3>
+      <p class="deliv-desc">White-background hero shots, infographic images, and detail close-ups formatted to marketplace specs.</p>
+      <div class="deliv-tags"><span class="dtag">2000x2000px</span><span class="dtag">White BG</span><span class="dtag">Marketplace Ready</span></div>
+    </div>
+    <div class="deliv-card rv">
+      <span class="deliv-ico">&#128241;</span>
+      <div class="deliv-n">02</div>
+      <h3 class="deliv-ttl">Instagram Creatives</h3>
+      <p class="deliv-desc">Square, portrait, and Reel-cover formats. Lifestyle compositions designed for maximum scroll-stop impact.</p>
+      <div class="deliv-tags"><span class="dtag">1:1 Square</span><span class="dtag">4:5 Portrait</span><span class="dtag">Story Crop</span></div>
+    </div>
+    <div class="deliv-card rv">
+      <span class="deliv-ico">&#128421;</span>
+      <div class="deliv-n">03</div>
+      <h3 class="deliv-ttl">Website Banners</h3>
+      <p class="deliv-desc">Hero banners, collection headers, and product-page features at full resolution &#8212; optimised for fast web loading.</p>
+      <div class="deliv-tags"><span class="dtag">Hero Banner</span><span class="dtag">Web-Optimised</span><span class="dtag">Retina Ready</span></div>
+    </div>
+    <div class="deliv-card rv">
+      <span class="deliv-ico">&#128227;</span>
+      <div class="deliv-n">04</div>
+      <h3 class="deliv-ttl">Ad Visuals</h3>
+      <p class="deliv-desc">Meta Ads, Google Display, and performance creative variants designed to stop the scroll and drive clicks.</p>
+      <div class="deliv-tags"><span class="dtag">Meta Ads</span><span class="dtag">Google Display</span><span class="dtag">A/B Variants</span></div>
+    </div>
+    <div class="deliv-card rv">
+      <span class="deliv-ico">&#127807;</span>
+      <div class="deliv-n">05</div>
+      <h3 class="deliv-ttl">Lifestyle Product Scenes</h3>
+      <p class="deliv-desc">Your product placed in aspirational environments &#8212; kitchens, vanities, desks &#8212; without a single real-world prop.</p>
+      <div class="deliv-tags"><span class="dtag">Context Scenes</span><span class="dtag">Multiple Themes</span><span class="dtag">Brand-Aligned</span></div>
+    </div>
+    <div class="deliv-card rv">
+      <span class="deliv-ico">&#127807;</span>
+      <div class="deliv-n">06</div>
+      <h3 class="deliv-ttl">Seasonal Campaign Visuals</h3>
+      <p class="deliv-desc">Diwali, Christmas, Valentine&#8217;s, or any campaign window &#8212; same product, dressed for the season, instantly.</p>
+      <div class="deliv-tags"><span class="dtag">Festive Themes</span><span class="dtag">Campaign Ready</span><span class="dtag">Zero Reshoot</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="port-head">
+    <div>
+      <div class="tag rv">Client Work</div>
+      <h2 class="sec-ttl rv">Real <em>transformations</em></h2>
+    </div>
+    <p class="sec-desc rv" style="max-width:300px;font-size:.82rem">Every image was produced from a raw phone photo. No studio. No photographer.</p>
+  </div>
+  <div class="port-grid">
+
+    <!-- B/A Skincare -->
+    <div class="port-item port-ba">
+      <div class="port-img">
+        <div class="ba-wrap">
+          <div class="ba-b"><img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1200&q=45" alt="Before"/><span class="ba-tag">Raw Phone Photo</span></div>
+          <div class="ba-a"><img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1200&q=95" alt="After"/><span class="ba-tag">AI Studio Result</span></div>
+          <div class="ba-line"></div>
+        </div>
+        <div class="port-ov"></div>
+      </div>
+      <div class="port-info">
+        <div class="port-cat">Skincare &#8212; Texture Preservation</div>
+        <div class="port-name">Botanica Face Oil &#183; Client Transformation</div>
+        <span class="port-spec">&#9670; Glass refraction rendered &#183; Liquid texture preserved &#183; Web + print ready</span>
+      </div>
+    </div>
+
+    <!-- Jewelry -->
+    <div class="port-item">
+      <div class="port-lbl">Jewelry</div>
+      <div class="port-img"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=700&q=92" alt="Diamond Ring"/><div class="port-ov"></div></div>
+      <div class="port-info">
+        <div class="port-cat">Jewelry &#8212; Reflective Accuracy</div>
+        <div class="port-name">Diamond Solitaire Ring</div>
+        <span class="port-spec">&#9670; Facet rendering &#183; Sparkle physics &#183; E-commerce hero</span>
+      </div>
+    </div>
+
+    <!-- Skincare -->
+    <div class="port-item">
+      <div class="port-lbl">Skincare</div>
+      <div class="port-img"><img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=700&q=92" alt="Night Cream"/><div class="port-ov"></div></div>
+      <div class="port-info">
+        <div class="port-cat">Skincare &#8212; Packaging Detail</div>
+        <div class="port-name">Velv&#233;t Night Cream</div>
+        <span class="port-spec">&#9670; Frosted glass &#183; Embossed text &#183; Lifestyle context</span>
+      </div>
+    </div>
+
+    <!-- B/A Jewelry -->
+    <div class="port-item port-ba">
+      <div class="port-img">
+        <div class="ba-wrap">
+          <div class="ba-b"><img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=40" alt="Before"/><span class="ba-tag">Raw Phone Photo</span></div>
+          <div class="ba-a"><img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=95" alt="After"/><span class="ba-tag">AI Studio Result</span></div>
+          <div class="ba-line"></div>
+        </div>
+        <div class="port-ov"></div>
+      </div>
+      <div class="port-info">
+        <div class="port-cat">Jewelry &#8212; Gold Chain &amp; Gemstone</div>
+        <div class="port-name">Lumi&#232;re Gold Necklace &#183; Client Transformation</div>
+        <span class="port-spec">&#9670; Chain texture depth &#183; Gemstone brilliance &#183; White-bg + lifestyle</span>
+      </div>
+    </div>
+
+    <!-- Tech -->
+    <div class="port-item">
+      <div class="port-lbl">Tech</div>
+      <div class="port-img"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700&q=92" alt="Smart Watch"/><div class="port-ov"></div></div>
+      <div class="port-info">
+        <div class="port-cat">Tech &#8212; Premium Positioning</div>
+        <div class="port-name">Obsidian Smart Watch</div>
+        <span class="port-spec">&#9670; Metallic surfaces &#183; Dial clarity &#183; Hero composition</span>
+      </div>
+    </div>
+
+    <!-- Skincare 3 -->
+    <div class="port-item">
+      <div class="port-lbl">Skincare</div>
+      <div class="port-img"><img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=700&q=92" alt="Serum"/><div class="port-ov"></div></div>
+      <div class="port-info">
+        <div class="port-cat">Skincare &#8212; Hero Shot</div>
+        <div class="port-name">Hydration Serum Collection</div>
+        <span class="port-spec">&#9670; Dropper glass &#183; Ingredient visual &#183; DTC-optimised</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="tag rv">Investment</div>
+  <h2 class="sec-ttl rv">Transparent <em>pricing</em></h2>
+  <p class="sec-desc rv">No hidden fees. Every tier delivers assets that outperform traditional studio photography.</p>
+  <div class="price-grid">
+    <div class="price-card rv">
+      <div class="plan-tier">Starter</div>
+      <div class="plan-price"><sup>&#8377;</sup>4,999</div>
+      <div class="plan-per">per project &#183; up to 5 SKUs</div>
+      <p class="plan-desc">Perfect for indie brands and product launches needing professional hero shots fast.</p>
+      <ul class="plan-feats">
+        <li>5 product images</li><li>White background + 1 lifestyle</li><li>Web-resolution exports</li><li>48-hour turnaround</li><li>2 revision rounds</li>
+        <li class="off">Before/After comparison set</li><li class="off">Print-resolution exports</li>
+      </ul>
+      <button class="pbtn pbtn-ol" data-plan="Starter">Get Started</button>
+    </div>
+    <div class="price-card feat rv">
+      <div class="feat-bdg">Most Popular</div>
+      <div class="plan-tier">Professional</div>
+      <div class="plan-price"><sup>&#8377;</sup>12,999</div>
+      <div class="plan-per">per project &#183; up to 15 SKUs</div>
+      <p class="plan-desc">Full-suite visuals for e-commerce, social, and print campaigns.</p>
+      <ul class="plan-feats">
+        <li>15 product images</li><li>3 lifestyle environments</li><li>Before/After comparison set</li><li>Web + print resolution</li><li>36-hour turnaround</li><li>5 revision rounds</li><li>Social media crops included</li>
+      </ul>
+      <button class="pbtn pbtn-fl" data-plan="Professional">Get Started</button>
+    </div>
+    <div class="price-card rv">
+      <div class="plan-tier">Enterprise</div>
+      <div class="plan-price" style="font-size:2rem;padding-top:.4rem">Custom</div>
+      <div class="plan-per">monthly retainer &#183; unlimited SKUs</div>
+      <p class="plan-desc">For established brands needing a consistent, high-volume creative partner.</p>
+      <ul class="plan-feats">
+        <li>Unlimited product images</li><li>Unlimited environments</li><li>Dedicated account manager</li><li>Priority 24h turnaround</li><li>Unlimited revisions</li><li>A/B variant creation</li><li>Monthly strategy call</li>
+      </ul>
+      <button class="pbtn pbtn-ol" data-plan="Enterprise">Contact Us</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="tag rv">What Clients Say</div>
+  <h2 class="sec-ttl rv">Brands <em>trust</em> the results</h2>
+  <div class="t-track">
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"Our conversion rate went up 34% after switching to AI studio assets. The jewelry shots capture facets we couldn&#8217;t get even with our in-house photographer."</p><div class="t-auth"><div class="t-av">P</div><div><div class="t-name">Priya Malhotra</div><div class="t-brand">Founder, Eclat Jewels</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"The texture preservation on our serums is unreal. Customers comment on the product photos every single day. Worth every rupee and then some."</p><div class="t-auth"><div class="t-av">R</div><div><div class="t-name">Rhea Sharma</div><div class="t-brand">CMO, Botanica Skin</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"The before/after comparison on our product page alone boosted add-to-cart by 18%. Clients trust what they can visually verify."</p><div class="t-auth"><div class="t-av">M</div><div><div class="t-name">Meera Joshi</div><div class="t-brand">Creative Director, Luxe Living</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"I was skeptical about AI photography but the gold reflections on our bangles look better than our studio shoots. Genuinely shocked."</p><div class="t-auth"><div class="t-av">S</div><div><div class="t-name">Sanya Kapoor</div><div class="t-brand">Founder, Sona Jewellery</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"Got 15 SKUs done over a weekend. What would&#8217;ve taken 3 studio days happened in 48 hours. Quality is indistinguishable from a professional shoot."</p><div class="t-auth"><div class="t-av">A</div><div><div class="t-name">Arjun Nair</div><div class="t-brand">Head of Growth, TechGadgets.in</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"Our conversion rate went up 34% after switching to AI studio assets. The jewelry shots capture facets we couldn&#8217;t get even with our in-house photographer."</p><div class="t-auth"><div class="t-av">P</div><div><div class="t-name">Priya Malhotra</div><div class="t-brand">Founder, Eclat Jewels</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"The texture preservation on our serums is unreal. Customers comment on the product photos every single day."</p><div class="t-auth"><div class="t-av">R</div><div><div class="t-name">Rhea Sharma</div><div class="t-brand">CMO, Botanica Skin</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"The before/after comparison on our product page alone boosted add-to-cart by 18%."</p><div class="t-auth"><div class="t-av">M</div><div><div class="t-name">Meera Joshi</div><div class="t-brand">Creative Director, Luxe Living</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"I was skeptical about AI photography but the gold reflections on our bangles look better than our studio shoots."</p><div class="t-auth"><div class="t-av">S</div><div><div class="t-name">Sanya Kapoor</div><div class="t-brand">Founder, Sona Jewellery</div></div></div></div>
+    <div class="t-card"><div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="t-txt">"Got 15 SKUs done over a weekend. What would&#8217;ve taken 3 studio days happened in 48 hours."</p><div class="t-auth"><div class="t-av">A</div><div><div class="t-name">Arjun Nair</div><div class="t-brand">Head of Growth, TechGadgets.in</div></div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="ct-grid">
+    <div class="rv">
+      <div class="tag">Start a Project</div>
+      <h2 class="sec-ttl">Let&#8217;s create something <em>extraordinary</em></h2>
+      <p class="sec-desc" style="margin-bottom:2rem">Vaishnav personally reviews every brief and responds within 4 hours.</p>
+      <div class="ct-det"><span class="ct-ico">&#9993;</span>hello@aurumstudio.in</div>
+      <div class="ct-det"><span class="ct-ico">&#9711;</span>Pune, Maharashtra &#183; Serving brands across India</div>
+      <div class="ct-det"><span class="ct-ico">&#9201;</span>Response within 4 hours</div>
+      <div style="margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+        <a href="https://wa.me/919999999999?text=Hi%20Vaishnav!%20I'd%20like%20to%20discuss%20a%20project." class="btn-wa" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Chat on WhatsApp
+        </a>
+        <a href="#" class="soc">ig</a><a href="#" class="soc">in</a><a href="#" class="soc">be</a>
+      </div>
+    </div>
+    <div class="ct-form rv">
+      <div class="frow">
+        <div class="fg"><label class="flbl">Your Name</label><input id="f-name" type="text" class="fi" placeholder="Priya Sharma"/></div>
+        <div class="fg"><label class="flbl">Brand / Company</label><input id="f-brand" type="text" class="fi" placeholder="Eclat Jewels"/></div>
+      </div>
+      <div class="fg"><label class="flbl">Email Address</label><input type="email" class="fi" placeholder="hello@yourbrand.com"/></div>
+      <div class="frow">
+        <div class="fg">
+          <label class="flbl">Product Category</label>
+          <select id="f-cat" class="fsel fi">
+            <option value="">Select category</option>
+            <option>Jewelry</option><option>Skincare &amp; Beauty</option><option>Tech Products</option><option>Fashion &amp; Apparel</option><option>Food &amp; Beverage</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="flbl">Number of SKUs</label>
+          <select class="fsel fi">
+            <option value="">Select range</option>
+            <option>1&#8211;5</option><option>6&#8211;15</option><option>16&#8211;50</option><option>50+</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="flbl">Tell Us About Your Project</label><textarea id="f-note" class="fta" placeholder="Share your brand story, goals, and any reference styles you love..."></textarea></div>
+      <button id="send-btn" class="btn-gold" style="width:100%">Send Project Brief &#8594;</button>
+      <a href="https://wa.me/919999999999?text=Hi%20Vaishnav!%20I'd%20like%20a%20quote%20for%20AI%20product%20photography." class="wa-big" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Or Chat Directly on WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section id="founder" style="background:var(--bg3);padding:5rem 4rem">
+  <div class="founder-wrap rv">
+    <div class="f-avatar"><div class="f-init">V</div></div>
+    <div>
+      <h3 class="f-name">Vaishnav</h3>
+      <div class="f-role">Founder &#183; Aurum AI Visual Studio</div>
+      <p class="f-bio">Built by Vaishnav &#8212; AI Visual Studio focused on helping <strong>emerging brands compete with global visuals.</strong><br/><br/>I specialise in Jewelry and Skincare &#8212; where texture accuracy and reflective precision are non-negotiable. Every project comes through me personally. You&#8217;re not dealing with a faceless agency &#8212; you&#8217;re working with someone who cares about every single image.<br/><br/>Based in Pune. Currently accepting pilot brand partners.</p>
+      <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+        <a href="https://wa.me/919999999999?text=Hi%20Vaishnav!" class="btn-wa" target="_blank" rel="noopener" style="padding:.6rem 1.1rem;font-size:.71rem">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Say Hi on WhatsApp
+        </a>
+        <a href="#" class="soc">ig</a><a href="#" class="soc">in</a><a href="#" class="soc">be</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">AURUM STUDIO</div>
+  <div class="foot-copy">&#169; 2025 Aurum Studio by Vaishnav. All rights reserved.</div>
+  <div class="foot-links"><a href="#">Privacy</a><a href="#">Terms</a></div>
+  <div class="socials">
+    <a href="https://wa.me/919999999999" class="soc" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+    <a href="#" class="soc">ig</a><a href="#" class="soc">in</a><a href="#" class="soc">be</a>
+  </div>
+</footer>
+
+<!-- FLOATING WA -->
+<a id="wa-float" href="https://wa.me/919999999999?text=Hi%20Vaishnav!%20I%20saw%20your%20portfolio%20and%20want%20to%20discuss%20a%20project." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <div class="wa-dot"></div>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <span class="wa-lbl">Chat on WhatsApp</span>
+</a>
+
+<script>
+(function(){
+  // CURSOR
+  var cur=document.getElementById('cur'),curR=document.getElementById('cur-r'),mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+  (function loop(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(loop)})();
+  document.querySelectorAll('a,button').forEach(function(el){
+    el.addEventListener('mouseenter',function(){curR.style.width='50px';curR.style.height='50px';curR.style.borderColor='var(--gold)'});
+    el.addEventListener('mouseleave',function(){curR.style.width='34px';curR.style.height='34px';curR.style.borderColor='rgba(201,168,76,.4)'});
+  });
+
+  // INTERSECTION OBSERVER REVEALS
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        obs.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.1,rootMargin:'0px 0px -30px 0px'});
+  document.querySelectorAll('.rv').forEach(function(el){obs.observe(el)});
+
+  // NAV SCROLL
+  var nav=document.getElementById('navbar');
+  window.addEventListener('scroll',function(){
+    if(window.scrollY>60){nav.style.background='rgba(12,12,12,.96)';nav.style.borderBottom='1px solid rgba(255,255,255,.07)'}
+    else{nav.style.background='';nav.style.borderBottom='none'}
+  },{passive:true});
+
+  // FLOATING WA — show after 2s
+  setTimeout(function(){document.getElementById('wa-float').classList.add('show')},2000);
+
+  // PRICING BUTTONS
+  document.querySelectorAll('.pbtn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var plan=btn.getAttribute('data-plan')||'your plan';
+      var msg=encodeURIComponent('Hi Vaishnav! I\'m interested in the '+plan+' plan. Can we discuss?');
+      window.open('https://wa.me/919999999999?text='+msg,'_blank');
+    });
+  });
+
+  // SEND BRIEF BUTTON
+  document.getElementById('send-btn').addEventListener('click',function(e){
+    e.preventDefault();
+    var name=(document.getElementById('f-name').value||'').trim();
+    var brand=(document.getElementById('f-brand').value||'').trim();
+    var cat=document.getElementById('f-cat').value||'my products';
+    var note=(document.getElementById('f-note').value||'').trim();
+    var msg='Hi Vaishnav! ';
+    if(name) msg+='I\'m '+name+'. ';
+    if(brand) msg+='From '+brand+'. ';
+    msg+='We sell '+cat+'. ';
+    if(note) msg+=note;
+    window.open('https://wa.me/919999999999?text='+encodeURIComponent(msg.trim()),'_blank');
+  });
+
+})();
+</script>
+</body>
+</html>
